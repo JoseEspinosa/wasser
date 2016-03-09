@@ -265,9 +265,10 @@ df_subset_for = df_dosage_traj_groups.loc[df_dosage_traj_groups['sex'].isin(sex_
 # # Subset data
 # df_sex_age = df_dosage_traj_groups.loc[df_dosage_traj_groups['sex'].isin(sex_opt) & df_dosage_traj_groups['ages'].isin(age_opt)]
 # df_subset_for = df_sex_age
+
+# Short example for testing [uncoment]
 # df_subset_for = df_subset_for[0:5]
 print >> stderr, ("Data frame=======: ",df_dosage_traj_groups[0:5]) #del
-
 
 ### First reverse the data
 # Reverse dataframe
@@ -278,7 +279,7 @@ df_subset_rev["month"] = (df_subset_rev["month"].astype(int) - max_t).abs()
 
 print >> stderr, ("Data frame rev********: ", df_subset_rev[0:5])#del
 
-
+# trans_dict['N06AB03']['N03AX11']
 (dict_tr, dict_index_dosage, all_index_drug) = get_transitions(in_df=df_subset_for,  dict_all_trans=trans_dict, pseudo=True, mode=mode_opt)
 (dict_tr_rev, dict_index_dosage_rev, all_index_drug_rev) = get_transitions(in_df=df_subset_rev,  dict_all_trans=trans_dict, pseudo=True, mode=mode_opt)
 
@@ -317,7 +318,9 @@ print >> stderr, (">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", sr_file_name + "_tbl" 
 print >> stderr, (">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", sr_file_name + "_mat" + ext_file)
 
 set_index, set_marker = map(set,zip(*list_trans))
-
+len(set_index)
+len(set_marker)
+len(list_trans)
 path_tbl = sr_file_name + "_tbl" + ext_file
 path_mat = sr_file_name + "_mat" + ext_file
 
@@ -328,6 +331,10 @@ sr_file_mat.write("index_drug\t") # let column with index below this label
 # sr_file_mat.write('\t'.join(item for item in sorted (drug_set)))
 sr_file_mat.write('\t'.join(item for item in sorted (set_marker)))
 sr_file_mat.write("\n")
+
+# All missing transitions can be inputed as 0 because the log will be 0, 0
+
+sr_list_all_trans = list()
 
 # ('N06AB03', 'N06AB03')
 # for n, i in enumerate(sorted(drugs_set_for)):
@@ -341,6 +348,7 @@ for index_dr in sorted(set_index):
         # if dict_sr_log[index_dr][marker_dr] != 0 : 
             # print >> stderr, (">>>>>>>>>>>>>>>>>>>>>dict>>>>>>>>>>>>>>>", index_dr, marker_dr, dict_sr_log[index_dr][marker_dr])
         # sr_file_mat.write('\t%f' % (sr_v[n]))
+        sr_list_all_trans.append(dict_sr_log[index_dr][marker_dr])
         sr_file_tbl.write('%s\t%s\t%f\n' % (index_dr, marker_dr, dict_sr_log[index_dr][marker_dr]))
 
     sr_file_mat.write('\n')    
@@ -352,8 +360,9 @@ n = len(set_index)
 m = len(set_marker)
 len_sr_log = len(sr_log)
 len_n_m = n*m
+len_all_trans = len(sr_list_all_trans)
 
-print >> stderr, (">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", len_sr_log, len_n_m)
+print >> stderr, (">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", len_sr_log, len_n_m, len_all_trans)
 
 dict_tr_test = defaultdict(lambda: defaultdict(int)) #del test
 print dict_tr_test['a']['b'] #del test
