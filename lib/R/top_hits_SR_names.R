@@ -65,7 +65,7 @@ sr_df_lab_name_ordered <- sr_df_lab_name[with(sr_df_lab_name, order(-SR)), ]
 # head(sr_df_lab_name_ordered,15)
 # install.packages("xlsx")
 
-tbl_file_ext <- ".xlsx"
+tbl_file_ext <- ".csv"
 name_tbl <-paste ("top_50_sr", "_" , name_out_tag, tbl_file_ext, sep="")
 
 # write.xlsx(head(sr_df_lab_name_ordered, 50), name_tbl) 

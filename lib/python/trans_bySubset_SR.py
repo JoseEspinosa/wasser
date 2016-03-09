@@ -6,6 +6,9 @@ import pandas as pd
 import numpy as np
 from collections import defaultdict
 from math import log
+#import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 from sys import stderr, argv, exit
 from json import load as json_load
@@ -192,8 +195,8 @@ def plot_heatmap (ary_data, lab_cols="", lab_rows="", colors=plt.cm.jet, path_fi
     #labels
     column_labels = lab_cols
     row_labels = lab_rows
-    ax.set_xticklabels(labels_cols, minor=False, size=0.2)
-    ax.set_yticklabels(labels_rows, minor=False, size=0.2)
+    ax.set_xticklabels(lab_cols, minor=False, size=0.2)
+    ax.set_yticklabels(lab_rows, minor=False, size=0.2)
 
     #plt.show()
     #plt.figure(figsize=(15,15), dpi=300)
@@ -267,8 +270,8 @@ df_subset_for = df_dosage_traj_groups.loc[df_dosage_traj_groups['sex'].isin(sex_
 # df_subset_for = df_sex_age
 
 # Short example for testing [uncoment]
-# df_subset_for = df_subset_for[0:5]
-print >> stderr, ("Data frame=======: ",df_dosage_traj_groups[0:5]) #del
+#df_subset_for = df_subset_for[0:5]
+#print >> stderr, ("Data frame=======: ",df_dosage_traj_groups[0:5]) #del
 
 ### First reverse the data
 # Reverse dataframe
@@ -285,7 +288,7 @@ print >> stderr, ("Data frame rev********: ", df_subset_rev[0:5])#del
 
 # dict_tr[('N06AB03', 'N03AX11')]
 
-print >> stderr, ("&&&&&&&&&&&&", dict_tr_rev[('N06AB03', 'N03AX11')])#del
+#print >> stderr, ("&&&&&&&&&&&&", dict_tr_rev[('N06AB03', 'N03AX11')])#del
 # group = df_subset_for
 # group
 # t1 = 0
@@ -362,17 +365,17 @@ len_sr_log = len(sr_log)
 len_n_m = n*m
 len_all_trans = len(sr_list_all_trans)
 
-print >> stderr, (">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", len_sr_log, len_n_m, len_all_trans)
+#print >> stderr, (">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", len_sr_log, len_n_m, len_all_trans)
 
-dict_tr_test = defaultdict(lambda: defaultdict(int)) #del test
-print dict_tr_test['a']['b'] #del test
+#dict_tr_test = defaultdict(lambda: defaultdict(int)) #del test
+#print dict_tr_test['a']['b'] #del test
 # exit("This is execution has been fucking good")
 
-sr_ary = np.array(sr_log).reshape(n, m)
+sr_ary = np.array(sr_list_all_trans).reshape(n, m)
 labels_heatmap_col = list(sorted(set_index))
 labels_heatmap_row = list(sorted(set_marker))
-name_fig = k_gr + type_img
-type_img = '.png'
+#name_fig = k_gr + type_img
+type_img = '.pdf'
 name_fig = sr_file_name + type_img
 #sr_file_name = "sr_" + "_".join(age_opt_str) + "_" + "_".join(sex_opt) + "_" + mode_opt
 
@@ -381,5 +384,5 @@ plot_heatmap (sr_ary, lab_cols=labels_heatmap_col, lab_rows=labels_heatmap_row, 
 
 # sr_file_mat.write('\t'.join(item for item in sorted (drug_set)))
 # sr_file_mat.write("\n")
-
+print >> stderr, (">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", len_sr_log, len_n_m, len_all_trans)
 

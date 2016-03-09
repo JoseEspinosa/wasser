@@ -21,15 +21,17 @@ transitions_file = file(dict_trans_path)
 R_lib="$HOME${params.lib_path}lib/R/"
 
 //\'first\',\'second\'
-//sex_opt = ['m w', 'm', 'w']
-sex_opt = ['m']
+sex_opt = ['m', 'w', 'm w']
+//sex_opt = ['m']
+//sex_opt = ['m', 'w']
 //age_opt = Channel.from('30 35', '45')
-//age_opt = ['30 35 40 45 50 55 60 65 70 75 80', '30 35', '40 45', '50 55', '60 65', '70 75', '60 65 70 75 80']
+// There are any men with an age of 70 or 75
+age_opt = ['30 35', '40 45', '50 55', '60 65', '60 65 70 75 80', '30 35 40 45 50 55 60 65 70 75 80']
 //age_opt = ['30 35']
-age_opt = ['30']
+//age_opt = ['30']
 
-//SR_mode =  ['counts', 'dosage']
-SR_mode =  ['counts']
+SR_mode =  ['counts', 'dosage']
+//SR_mode =  ['counts']
 
 process combine {
   input:
@@ -46,7 +48,7 @@ process combine {
   output: 
   set file('*_tbl.csv'), sex, age, mode into sr_by_group
   set file('*_tbl.csv') into sr_by_group2write
-  
+  set file ('*.pdf') into heatmaps_SR
   script:
   println "Options for SR calculation are: $traj_annotation $transitions_dict $sex $age $mode"
   
@@ -63,6 +65,12 @@ sr_by_group2write.subscribe {
     it.copyTo (it.name) 
 }
 
+//Saving heatmaps with transitions
+heatmaps_SR.subscribe {
+    println "Received: " + it.name
+    it.copyTo (it.name)
+}
+
 //atc_df<- read.csv(file="/Users/jespinosa/Downloads/ATC.csv",header=TRUE, sep=",")
 params.ATC_codes = "ATC.csv"
 
@@ -74,8 +82,8 @@ process top_20_hits {
     set file ('tbl_hits'), val (sex), val (age), val (mode) from sr_by_group
     set file ('ATC_ontology') from atc_code_file
     output:
-    set file ('*.xlsx') into test
-    
+    set file ('*.csv') into top_hits    
+
     script:
     joined_sex = sex.iterator().join('').replaceAll("\\s", "_")
     joined_age = age.iterator().join('').replaceAll("\\s", "_")
@@ -87,10 +95,16 @@ process top_20_hits {
     
     """
     export R_LIBS="/software/R/packages"
-    echo "ddddd" > ${joined_options}.xlsx
     R --vanilla --slave --args ${tbl_hits} ${ATC_ontology} ${joined_options} < ${R_lib}top_hits_SR_names.R
     """        
 }
+
+//Saving tables with transitions
+top_hits.subscribe {
+    println "Received: " + it.name
+    it.copyTo (it.name)
+}
+
 
 //export R_LIBS="/software/R/packages"
         
