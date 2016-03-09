@@ -7,17 +7,18 @@
 #################################################################################
 */
 
-path_files = "/users/cn/jespinosa/2015_viscMes/data/SR_analysis/"
+path_files = "$HOME/2015_viscMes/data/SR_analysis/"
 params.in_trajectories_annot = "traj_annotated.csv"
 params.dict_trans_found = "dict_traj_found.json"
-
+params.lib_path="/git/wasser/"
 traj_path = "${path_files}${params.in_trajectories_annot}"
 dict_trans_path =  "${path_files}${params.dict_trans_found}"
 
 viscMes_file = file(traj_path)
 transitions_file = file(dict_trans_path)
 
-R_lib="/users/cn/jespinosa/2015_viscMes/lib/R/"
+
+R_lib="$HOME${params.lib_path}lib/R/"
 
 //\'first\',\'second\'
 //sex_opt = ['m w', 'm', 'w']
@@ -52,7 +53,7 @@ process combine {
 //  each color from 'red','blue'
 //  each size from 1,2
   """
-  $HOME/2015_viscMes/lib/python/trans_bySubset_SR.py -i $traj_annotation -t $transitions_dict -s \'$sex\' -a \'$age\' -m $mode
+  $HOME/git/wasser/lib/python/trans_bySubset_SR.py -i $traj_annotation -t $transitions_dict -s \'$sex\' -a \'$age\' -m $mode
   """
 }
 
