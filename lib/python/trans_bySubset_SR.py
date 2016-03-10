@@ -254,7 +254,7 @@ print >> stderr, "File trajectories annotation",  dosage_traj_file
 print >> stderr, "File transition dictionary", transitions_file
 
 #/Library/Frameworks/Python.framework/Versions/2.7/envs/pytables/bin/python
-df_dosage_traj_groups = pd.read_csv('/Users/jespinosa/2015_viscMes/data/SR_analysis/traj_annotated.csv', index_col=0)#comment
+# df_dosage_traj_groups = pd.read_csv('/Users/jespinosa/2015_viscMes/data/SR_analysis/traj_annotated.csv', index_col=0)#comment
 df_dosage_traj_groups = pd.read_csv(dosage_traj_file, index_col=0)
 
 ## reading dictionary with all the transitions found in the original data
@@ -417,4 +417,3 @@ plot_heatmap (sr_ary, lab_cols=labels_heatmap_col, lab_rows=labels_heatmap_row, 
 # sr_file_mat.write('\t'.join(item for item in sorted (drug_set)))
 # sr_file_mat.write("\n")
 print >> stderr, (">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", len_sr_log, len_n_m, len_all_trans)
-
