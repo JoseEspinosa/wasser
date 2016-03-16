@@ -48,7 +48,7 @@ sr_df$marker_code <- substr(sr_df$V2, 1, 4)
 # head(sr_df)
 # change colnames
 colnames(sr_df) <- c("index_drug", "marker_drug", "SR", "index_code", "marker_code")
-
+# head(sr_df)
 sr_df_index_lab <- merge (sr_df, atc_df[, c("code", "Preferred.Label")], by.x= "index_code", by.y = "code", sort=F)
 sr_df_lab <- merge (sr_df_index_lab, atc_df[, c("code", "Preferred.Label")], by.x= "marker_code", by.y = "code", sort=F)
 # head(sr_df_lab)
@@ -62,6 +62,7 @@ colnames(sr_df_lab_name) <- c(colnames(sr_df_lab_name)[1:7], "name_index", "name
 head (sr_df_lab_name)
 
 sr_df_lab_name_ordered <- sr_df_lab_name[with(sr_df_lab_name, order(-SR)), ]
+sr_df_lab_name_ordered <- sr_df_lab_name_ordered [,c("index_drug", "marker_drug", "index_code", "marker_code", "SR", "ATC_family_index", "ATC_family_marker", "name_index", "name_marker")]
 # head(sr_df_lab_name_ordered,15)
 # install.packages("xlsx")
 
