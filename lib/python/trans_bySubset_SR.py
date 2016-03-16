@@ -20,7 +20,7 @@ from argparse import ArgumentParser
 ## Functions
 ##########    
 # def get_transitions(in_df, dict_all_trans, pseudo=True, mode="dosage"):
-def get_transitions(in_df, set_all_trans, pseudo=True, mode="dosage"):
+def get_transitions(in_df, set_all_drugs, pseudo=True, mode="dosage"):
     '''
     Get transitions by patient inside a pandas dataframe
     '''
@@ -131,7 +131,7 @@ def get_transitions(in_df, set_all_trans, pseudo=True, mode="dosage"):
 
     
     if pseudo:
-        dict_trans = add_pseudo_acc_dict (set_all_trans = set_all_trans, index_drug_set = index_drug_set, d_trans_subset = dict_trans, d_index_dosage = dict_index_dosage)
+        dict_trans = add_pseudo_acc_dict (set_all_drugs = set_all_drugs, index_drug_set = index_drug_set, d_trans_subset = dict_trans, d_index_dosage = dict_index_dosage)
     
     print ("End of function")
     return(dict_trans, dict_index_dosage, index_drug_set)
@@ -139,13 +139,14 @@ def get_transitions(in_df, set_all_trans, pseudo=True, mode="dosage"):
 ####################
 # dict_all_trans contains in principle all the drugs
 # becuase it comes from the orignal table
-def add_pseudo_acc_dict (set_all_trans, index_drug_set, d_trans_subset, d_index_dosage):
+# def add_pseudo_acc_dict (dict_all_trans, index_drug_set, d_trans_subset, d_index_dosage):
+def add_pseudo_acc_dict (set_all_drugs, index_drug_set, d_trans_subset, d_index_dosage):
     # for i in sorted(dict_all_trans.keys()):
-    for i in sorted(set_all_trans):    
+    for i in sorted(set_all_drugs):    
         #for j in list_all_drugs:
         # for j in sorted(dict_all_trans[i].keys()):
         # for j in sorted(dict_all_trans.keys()):
-        for j in sorted(set_all_trans):    
+        for j in sorted(set_all_drugs):    
             # We need pseudo for transition between same 
             # if i == j:
             #     continue
@@ -167,8 +168,8 @@ def add_pseudo_acc_dict (set_all_trans, index_drug_set, d_trans_subset, d_index_
     return (d_trans_subset)   
 
 ##########
-def SR_dosage_dict (dict_all_trans, dict_trans_drug, dict_trans_drug_rev, mode="ratio_avg"):
-# def SR_dosage_dict (set_all_trans, dict_trans_drug, dict_trans_drug_rev, mode="ratio_avg"):    
+# def SR_dosage_dict (dict_all_trans, dict_trans_drug, dict_trans_drug_rev, mode="ratio_avg"):
+def SR_dosage_dict (set_all_drugs, dict_trans_drug, dict_trans_drug_rev, mode="ratio_avg"):    
     d_trans_for = dict_trans_drug   
     d_trans_rev = dict_trans_drug_rev
     d_sr = defaultdict(lambda: defaultdict(int))
@@ -182,11 +183,11 @@ def SR_dosage_dict (dict_all_trans, dict_trans_drug, dict_trans_drug_rev, mode="
     sr = list()
     sr_trans = list()
     
-    for i in sorted(dict_all_trans.keys()):
-    # for i in sorted(drug_set):
+    # for i in sorted(dict_all_trans.keys()):
+    for i in sorted(set_all_drugs):
         # for j in sorted (drug_set):
-        for j in sorted(dict_all_trans[i].keys()):
-        # for j in sorted(set_all_trans):
+        # for j in sorted(dict_all_trans[i].keys()):
+        for j in sorted(set_all_drugs):
             # print( "------", i,j)
             if i == j:
                 sr.append(0)
@@ -292,10 +293,12 @@ df_dosage_traj_groups = pd.read_csv(dosage_traj_file, index_col=0)
 # It is better just to recover a set with all possible drugs 
 set_drugs = set(df_dosage_traj_groups['drug'])
 
+print len(set_drugs)
+
 # with open('/Users/jespinosa/2015_viscMes/data/SR_analysis/dict_traj_found.json', 'r') as f: #comment
     # trans_dict = json_load(f)
-with open(transitions_file, 'r') as f:
-        trans_dict = json_load(f)
+# with open(transitions_file, 'r') as f:
+#         trans_dict = json_load(f)
         
 # Comment 
 # debugging
@@ -303,7 +306,8 @@ with open(transitions_file, 'r') as f:
 # trans_dict_subset = dict([ (k, trans_dict.get(k, "culo")) for k in ('A02BC01', 'H02AB08') ])
 # trans_dict_subset['H02AB08']
 # trans_dict = trans_dict_subset
-print >> stderr, ("Transitions dictionary contains %i keys" %  len(trans_dict.keys()))
+
+# print >> stderr, ("Transitions dictionary contains %i keys" %  len(trans_dict.keys()))
 
 #msg =  "Debugging until here!!!! Works, I am fucking good! :P " + "-".join(sex_opt) + " " + " ".join(age_opt) + " " +  dosage_traj_file
 
@@ -341,8 +345,8 @@ df_subset_rev["month"] = (df_subset_rev["month"].astype(int) - max_t).abs()
 # print >> stderr, ("Data frame rev********: ",df_subset_rev[-5:-1])#comment
 # trans_dict['N06AB03']['N03AX11']
 # mode_opt = "dosage"#comment
-(dict_tr, dict_index_dosage, all_index_drug) = get_transitions(in_df=df_subset_for,  set_all_trans=set_drugs, pseudo=True, mode=mode_opt)
-(dict_tr_rev, dict_index_dosage_rev, all_index_drug_rev) = get_transitions(in_df=df_subset_rev,  set_all_trans=set_drugs, pseudo=True, mode=mode_opt)
+(dict_tr, dict_index_dosage, all_index_drug) = get_transitions(in_df=df_subset_for,  set_all_drugs=set_drugs, pseudo=True, mode=mode_opt)
+(dict_tr_rev, dict_index_dosage_rev, all_index_drug_rev) = get_transitions(in_df=df_subset_rev,  set_all_drugs=set_drugs, pseudo=True, mode=mode_opt)
 
 # dict_tr['A02BC01', 'H02AB08']#comment
 # dict_tr_rev['A02BC01', 'H02AB08']#comment
@@ -374,8 +378,8 @@ df_subset_rev["month"] = (df_subset_rev["month"].astype(int) - max_t).abs()
 # define everything for the reversal
 
 #(sr_log, list_trans, list_drug_returned) = SR_dosage(list_drugs=list_all_drug, dict_trans_drug = dict_tr, dict_trans_drug_rev= dict_tr_rev)
-(sr_log, list_trans, dict_sr_log) = SR_dosage_dict(dict_all_trans = trans_dict, dict_trans_drug = dict_tr, dict_trans_drug_rev= dict_tr_rev, mode="ratio_avg")
-# (sr_log, list_trans, dict_sr_log) = SR_dosage_dict(set_all_trans=set_drugs, dict_trans_drug = dict_tr, dict_trans_drug_rev= dict_tr_rev, mode="ratio_avg")
+# (sr_log, list_trans, dict_sr_log) = SR_dosage_dict(dict_all_trans = trans_dict, dict_trans_drug = dict_tr, dict_trans_drug_rev= dict_tr_rev, mode="ratio_avg")
+(sr_log, list_trans, dict_sr_log) = SR_dosage_dict(set_all_drugs=set_drugs, dict_trans_drug = dict_tr, dict_trans_drug_rev= dict_tr_rev, mode="ratio_avg")
 
 
 # trans_dict [1:5]
